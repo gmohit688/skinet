@@ -1,4 +1,6 @@
 
+using API.Helpers;
+using AutoMapper;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +12,8 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<StoreContext>(x=>x.UseSqlite("Data Source=./skinet.db"));
 builder.Services.AddEndpointsApiExplorer(); // Required for minimal APIs or OpenAPI
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
+builder.Services.AddAutoMapper(typeof(MappingProfiles));
 
 var app = builder.Build();
 // Database migration handling with logging.
@@ -32,6 +36,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseAuthorization();
 app.MapControllers(); // Map controller routes
 
